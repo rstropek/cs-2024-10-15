@@ -22,6 +22,17 @@ module insightsModule './app-insights.bicep' = {
   }
 }
 
+module sql './sql.bicep' = {
+  name: '${deployment().name}-sqlDeploy'
+  params: {
+    location: location
+    projectName: projectName
+    tags: tags
+    sqlAdminGroupName: sqlAdminGroupName
+    sqlAdminGroupId: sqlAdminGroupId
+  }
+}
+
 module web './app-service.bicep' = {
   name: '${deployment().name}-appServiceDeploy'
   params: {
@@ -29,6 +40,8 @@ module web './app-service.bicep' = {
     projectName: projectName
     tags: tags
     appInsightsConnectionString: insightsModule.outputs.appInsightsConnectionString
+    sqlServerName: sql.outputs.sqlServerName
+    databaseName: sql.outputs.databaseName
   }
 }
 
@@ -43,13 +56,3 @@ module containerApps './container-apps.bicep' = {
   }
 }
 
-module sql './sql.bicep' = {
-  name: '${deployment().name}-sqlDeploy'
-  params: {
-    location: location
-    projectName: projectName
-    tags: tags
-    sqlAdminGroupName: sqlAdminGroupName
-    sqlAdminGroupId: sqlAdminGroupId
-  }
-}

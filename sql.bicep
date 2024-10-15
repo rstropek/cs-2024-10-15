@@ -56,3 +56,12 @@ resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
     }
   }
 }
+
+/*
+# Don't forget to create users in DB
+CREATE USER [$APP_SERVICE_NAME] FROM EXTERNAL PROVIDER
+EXEC sp_addrolemember 'db_owner', [$APP_SERVICE_NAME]
+*/
+
+output sqlServerName string = sqlServer.name
+output databaseName string = 'demo'

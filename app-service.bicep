@@ -2,6 +2,8 @@ param location string = resourceGroup().location
 param projectName string
 param tags object
 param appInsightsConnectionString string
+param sqlServerName string
+param databaseName string
 
 var abbrs = loadJsonContent('abbreviations.json')
 
@@ -31,7 +33,7 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
     publicNetworkAccess: 'Enabled'
     serverFarmId: appServicePlan.id
     siteConfig: {
-      linuxFxVersion: 'DOCKER|rstropek/api'
+      linuxFxVersion: 'DOCKER|rstropek/hellocontainerapps:v4'
       alwaysOn: true
       cors: {
         allowedOrigins: ['*']
@@ -47,6 +49,7 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
       DOCKER_REGISTRY_SERVER_URL: 'https://index.docker.io'
       PORT: '8080'
       APPLICATIONINSIGHTS_CONNECTION_STRING: appInsightsConnectionString
+      ConnectionStrings__Database: 'Server=tcp:${sqlServerName}${environment().suffixes.sqlServerHostname};Database=demo;Authentication=Active Directory Managed Identity; Encrypt=True;'
     }
   }
 }
